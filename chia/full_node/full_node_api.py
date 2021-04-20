@@ -147,14 +147,14 @@ class FullNodeAPI:
         self,
         tx: full_node_protocol.RespondTransaction,
         peer: ws.WSChiaConnection,
-        tx_bytes: bytes = b'',
+        tx_bytes: bytes = b"",
         test: bool = False,
     ) -> Optional[Message]:
         """
         Receives a full transaction from peer.
         If tx is added to mempool, send tx_id to others. (new_transaction)
         """
-        assert tx_bytes != b''
+        assert tx_bytes != b""
         spend_name = std_hash(tx_bytes)
         await self.full_node.respond_transaction(tx.transaction, spend_name, peer, test)
         return None
