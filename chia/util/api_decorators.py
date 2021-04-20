@@ -18,8 +18,11 @@ def api_request(f):
         # The method can also be called with the target type instead of a dictionary.
         for param_name, param_class in f.__annotations__.items():
             if param_name != "return" and isinstance(inter[param_name], bytes):
+                if param_class.__name__ == "bytes":
+                    continue
+                if hasattr(f, "bytes_required"):
+                    inter[f"{param_name}_bytes"] = inter[param_name]
                 inter[param_name] = param_class.from_bytes(inter[param_name])
-
         return f(**inter)
 
     setattr(f_substitute, "api_function", True)
@@ -29,6 +32,14 @@ def api_request(f):
 def peer_required(func):
     def inner():
         setattr(func, "peer_required", True)
+        return func
+
+    return inner()
+
+
+def bytes_required(func):
+    def inner():
+        setattr(func, "bytes_required", True)
         return func
 
     return inner()
